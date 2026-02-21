@@ -1,21 +1,87 @@
+############################
+# Build results
+############################
 bin/
 obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
-# Default ignored files
-/shelf/
-/workspace.xml
-# Rider ignored files
-/projectSettingsUpdater.xml
-/contentModel.xml
-/.idea.Accelerator.iml
-/modules.xml
-# Ignored default folder with query files
-/queries/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-/.idea
+out/
+TestResults/
+
+############################
+# .NET Core / .NET 8
+############################
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.runtimeconfig.dev.json
+*.deps.json
+*.runtimeconfig.json
+
+############################
+# User-specific files
+############################
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+############################
+# Rider / IntelliJ
+############################
+.idea/
+*.sln.iml
+
+############################
+# VS Code (if opened occasionally)
+############################
+.vscode/
+
+############################
+# Logs
+############################
+*.log
+
+############################
+# macOS
+############################
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+############################
+# Environment files
+############################
+.env
+.env.*
+!.env.example
+
+############################
+# NuGet
+############################
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+*.nuget.props
+*.nuget.targets
+
+############################
+# Coverage / Testing
+############################
+coverage/
+*.coverage
+*.coveragexml
+*.trx
+
+############################
+# Publish output
+############################
+publish/
+
+############################
+# Temporary files
+############################
+*.tmp
+*.temp
+*.swp
