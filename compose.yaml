@@ -1,0 +1,21 @@
+services:
+  accelerator:
+    image: accelerator
+    build:
+      context: .
+      dockerfile: Accelerator/Dockerfile
+    # Optional: add environment variables or ports as needed
+
+  accelerator-tests:
+    image: accelerator-tests
+    build:
+      context: .
+      dockerfile: Accelerator.Tests/Dockerfile
+    # Playwright tests; for browser tests in CI, consider a Playwright base image
+
+  accelerator-apitests:
+    image: accelerator-apitests
+    build:
+      context: .
+      dockerfile: Accelerator.ApiTests/Dockerfile
+    # API tests run during build; service can be used to re-run in CI
