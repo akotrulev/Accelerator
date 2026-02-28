@@ -1,21 +1,21 @@
 services:
-  accelerator:
-    image: accelerator
+  appium-tests:
+    image: appium-tests
     build:
       context: .
-      dockerfile: Accelerator/Dockerfile
+      dockerfile: AppiumTests/Dockerfile
     # Optional: add environment variables or ports as needed
 
-  accelerator-tests:
-    image: accelerator-tests
+  playwright-tests:
+    image: playwright-tests
     build:
       context: .
-      dockerfile: Accelerator.Tests/Dockerfile
+      dockerfile: PlaywrightTests/Dockerfile
     # Playwright tests; for browser tests in CI, consider a Playwright base image
 
-  accelerator-apitests:
-    image: accelerator-apitests
+  api-tests:
+    image: api-tests
     build:
       context: .
-      dockerfile: Accelerator.ApiTests/Dockerfile
+      dockerfile: ApiTests/Dockerfile
     # API tests run during build; service can be used to re-run in CI
