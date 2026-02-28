@@ -29,4 +29,17 @@ public class AndroidEmulatorConfig
 
         return options;
     }
+
+    public static AppiumOptions CreateBrowserOptions(string browserName = "Chrome")
+    {
+        var options = new AppiumOptions
+        {
+            PlatformName = "Android",
+            AutomationName = "UiAutomator2",
+            DeviceName = DeviceName,
+            BrowserName = browserName
+        };
+        options.AddAdditionalAppiumOption("avd", Avd);
+        return options;
+    }
 }

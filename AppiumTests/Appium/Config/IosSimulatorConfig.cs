@@ -27,7 +27,7 @@ public class IosSimulatorConfig
         return options;
     }
 
-    public static AppiumOptions CreateBrowserOptions(string browserName = "Chrome")
+    public static AppiumOptions CreateBrowserOptions(string browserName = "Safari")
     {
         var options = new AppiumOptions
         {
@@ -37,6 +37,8 @@ public class IosSimulatorConfig
             PlatformVersion = PlatformVersion,
             BrowserName = browserName
         };
+
+        options.AddAdditionalAppiumOption("webviewConnectTimeout", 2000);
 
         if (!string.IsNullOrEmpty(Udid))
             options.AddAdditionalAppiumOption("udid", Udid);

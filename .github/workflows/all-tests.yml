@@ -1,0 +1,33 @@
+name: All Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_env:
+        description: 'Test environment (Test, Staging, …)'
+        default: 'Test'
+        required: false
+      browser:
+        description: 'Playwright browser (chromium, firefox, webkit)'
+        default: 'chromium'
+        required: false
+
+jobs:
+  api:
+    uses: ./.github/workflows/api-tests.yml
+    with:
+      test_env: ${{ inputs.test_env }}
+    secrets: inherit
+
+  playwright:
+    uses: ./.github/workflows/playwright-tests.yml
+    with:
+      test_env: ${{ inputs.test_env }}
+      browser: ${{ inputs.browser }}
+    secrets: inherit
+
+  appium:
+    uses: ./.github/workflows/appium-tests.yml
+    with:
+      test_env: ${{ inputs.test_env }}
+    secrets: inherit

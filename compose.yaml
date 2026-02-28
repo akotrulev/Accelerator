@@ -4,18 +4,23 @@ services:
     build:
       context: .
       dockerfile: AppiumTests/Dockerfile
-    # Optional: add environment variables or ports as needed
+    environment:
+      - TEST_ENV=${TEST_ENV:-Test}
+    devices:
+      - /dev/kvm:/dev/kvm
 
   playwright-tests:
     image: playwright-tests
     build:
       context: .
       dockerfile: PlaywrightTests/Dockerfile
-    # Playwright tests; for browser tests in CI, consider a Playwright base image
+    environment:
+      - TEST_ENV=${TEST_ENV:-Test}
 
   api-tests:
     image: api-tests
     build:
       context: .
       dockerfile: ApiTests/Dockerfile
-    # API tests run during build; service can be used to re-run in CI
+    environment:
+      - TEST_ENV=${TEST_ENV:-Test}

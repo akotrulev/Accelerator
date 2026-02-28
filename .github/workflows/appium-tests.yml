@@ -1,0 +1,47 @@
+name: Appium Tests
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'AppiumTests/**'
+      - '.github/workflows/appium-tests.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'AppiumTests/**'
+      - '.github/workflows/appium-tests.yml'
+  workflow_dispatch:
+    inputs:
+      test_env:
+        description: 'Test environment (Test, Staging, …)'
+        default: 'Test'
+        required: false
+  workflow_call:
+    inputs:
+      test_env:
+        type: string
+        default: 'Test'
+
+jobs:
+  appium-tests:
+    runs-on: ubuntu-latest
+    env:
+      TEST_ENV: ${{ inputs.test_env || 'Test' }}
+      EXECUTION_MODE: BrowserStack
+      BrowserStack__UserName: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BrowserStack__AccessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+      - run: dotnet restore AppiumTests/AppiumTests.csproj
+      - run: dotnet build AppiumTests/AppiumTests.csproj -c Release --no-restore
+      - run: dotnet test AppiumTests/AppiumTests.csproj -c Release --no-build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results-appium
+          path: allure-results/
+          if-no-files-found: warn

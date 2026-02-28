@@ -1,0 +1,55 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'PlaywrightTests/**'
+      - '.github/workflows/playwright-tests.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'PlaywrightTests/**'
+      - '.github/workflows/playwright-tests.yml'
+  workflow_dispatch:
+    inputs:
+      test_env:
+        description: 'Test environment (Test, Staging, …)'
+        default: 'Test'
+        required: false
+      browser:
+        description: 'Browser (chromium, firefox, webkit)'
+        default: 'chromium'
+        required: false
+  workflow_call:
+    inputs:
+      test_env:
+        type: string
+        default: 'Test'
+      browser:
+        type: string
+        default: 'chromium'
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-latest
+    env:
+      TEST_ENV: ${{ inputs.test_env || 'Test' }}
+      PlaywrightSettings__Headless: true
+      PlaywrightSettings__BrowserType: ${{ inputs.browser || 'chromium' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+      - run: dotnet restore PlaywrightTests/PlaywrightTests.csproj
+      - run: dotnet build PlaywrightTests/PlaywrightTests.csproj -c Release --no-restore
+      - name: Install Playwright browsers
+        run: pwsh PlaywrightTests/bin/Release/net8.0/playwright.ps1 install --with-deps chromium
+      - run: dotnet test PlaywrightTests/PlaywrightTests.csproj -c Release --no-build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results-playwright
+          path: allure-results/
+          if-no-files-found: warn
