@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace ApiTests;
 
 [TestFixture]
-public class JsonPlaceholderApiTests
+public class JsonPlaceholderApiTests : BaseApiTest
 {
     [Test]
     public void GetPosts_ReturnsOk()

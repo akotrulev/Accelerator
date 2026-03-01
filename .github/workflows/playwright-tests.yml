@@ -47,9 +47,13 @@ jobs:
       - name: Install Playwright browsers
         run: pwsh PlaywrightTests/bin/Release/net8.0/playwright.ps1 install --with-deps chromium
       - run: dotnet test PlaywrightTests/PlaywrightTests.csproj -c Release --no-build
-      - uses: actions/upload-artifact@v4
+      - name: Upload failure artifacts
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: allure-results-playwright
-          path: allure-results/
-          if-no-files-found: warn
+          name: playwright-failure-artifacts
+          path: |
+            failures/
+            videos/
+            playwright-traces/
+          if-no-files-found: ignore

@@ -69,12 +69,40 @@ docker build -f PlaywrightTests/Dockerfile -t playwright-tests .
 
 The image is based on `mcr.microsoft.com/playwright/dotnet:v1.58.0-jammy`, which ships with all Playwright browsers pre-installed. Tests run automatically as the container starts.
 
-## Allure reports
+## Test artifacts & report
 
-After a test run, results are written to `allure-results/`. Generate and open the report with:
+On failure each test saves three artifacts:
+
+| Artifact | Location | Description |
+|----------|----------|-------------|
+| Screenshot | `failures/<TestName>.png` | Full-page PNG captured at the moment of failure |
+| Video | `videos/` | WebM recording of the entire test run |
+| Playwright Trace | `playwright-traces/<ClassName>.<TestName>.zip` | Playwright's built-in report — action timeline, DOM snapshots, network, console logs |
+
+### Viewing the trace (Playwright's report)
 
 ```bash
-allure serve allure-results
+# After a local run
+pwsh PlaywrightTests/bin/Release/net8.0/playwright.ps1 show-trace \
+  playwright-traces/<ClassName>.<TestName>.zip
+```
+
+Or drag-and-drop the zip onto **[trace.playwright.dev](https://trace.playwright.dev)** — all processing happens in-browser, nothing is uploaded externally.
+
+### GitHub Actions
+
+Download the **`playwright-failure-artifacts`** artifact from the workflow run — it contains `failures/`, `videos/`, and `playwright-traces/`.
+
+### Docker
+
+```bash
+docker build -f PlaywrightTests/Dockerfile -t playwright-tests .
+
+docker run --rm \
+  -v $(pwd)/failures:/app/failures \
+  -v $(pwd)/videos:/app/videos \
+  -v $(pwd)/playwright-traces:/app/playwright-traces \
+  playwright-tests
 ```
 
 ## Project structure
@@ -91,6 +119,5 @@ PlaywrightTests/
 │   └── HomePage.cs              # Home page object
 ├── appsettings.json
 ├── appsettings.Test.json        # Local overrides (not committed)
-├── allureConfig.json
 └── Dockerfile
 ```

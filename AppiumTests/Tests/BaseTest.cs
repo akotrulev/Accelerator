@@ -1,7 +1,9 @@
 using AppiumTests.Appium;
 using AppiumTests.Appium.Config;
 using AppiumTests.Config;
+using AppiumTests.Logging;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Service;
 
@@ -44,6 +46,7 @@ public abstract class BaseTest
     [SetUp]
     public void SetUp()
     {
+        TestLogger.Clear();
         Driver = ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase)
             ? CreateBrowserStackDriver()
             : CreateLocalDriver();
@@ -52,6 +55,14 @@ public abstract class BaseTest
     [TearDown]
     public void TearDown()
     {
+        if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+        {
+            TestContext.Out.WriteLine("--- Test Action Log ---");
+            foreach (var entry in TestLogger.GetLogs())
+                TestContext.Out.WriteLine(entry);
+            TestContext.Out.WriteLine("--- End of Log ---");
+        }
+
         Driver?.Quit();
         Driver?.Dispose();
     }

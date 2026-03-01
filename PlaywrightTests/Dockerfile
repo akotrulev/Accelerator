@@ -9,4 +9,5 @@ COPY PlaywrightTests/ PlaywrightTests/
 
 RUN dotnet build PlaywrightTests/PlaywrightTests.csproj --no-restore -c Release
 
+# Mount /app/failures, /app/videos, and /app/playwright-traces to retrieve failure artifacts.
 CMD ["dotnet", "test", "PlaywrightTests/PlaywrightTests.csproj", "--no-build", "-c", "Release"]
