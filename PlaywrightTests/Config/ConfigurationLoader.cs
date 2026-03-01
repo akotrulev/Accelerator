@@ -6,6 +6,7 @@ public static class ConfigurationLoader
 {
     public static IConfiguration Root { get; } = BuildConfiguration();
 
+    // Loads appsettings.json, an environment-specific overlay, and environment variables into a single IConfiguration root.
     private static IConfiguration BuildConfiguration()
     {
         var env = Environment.GetEnvironmentVariable("TEST_ENV") ?? "Test";
@@ -17,9 +18,11 @@ public static class ConfigurationLoader
             .Build();
     }
 
+    // Reads the TestEnvironment config section and returns it as a strongly-typed options object.
     public static TestEnvironmentOptions GetTestEnvironment() =>
         Root.GetSection(TestEnvironmentOptions.SectionName).Get<TestEnvironmentOptions>() ?? new TestEnvironmentOptions();
 
+    // Reads the PlaywrightSettings config section and returns it as a strongly-typed options object.
     public static PlaywrightOptions GetPlaywrightOptions() =>
         Root.GetSection(PlaywrightOptions.SectionName).Get<PlaywrightOptions>() ?? new PlaywrightOptions();
 }

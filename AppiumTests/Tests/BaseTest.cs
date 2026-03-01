@@ -1,9 +1,11 @@
+using Allure.Net.Commons;
 using AppiumTests.Appium;
 using AppiumTests.Appium.Config;
 using AppiumTests.Config;
 using AppiumTests.Logging;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Service;
 
@@ -24,6 +26,7 @@ public abstract class BaseTest
     private AppiumLocalService? _appiumService;
     protected AppiumDriver Driver { get; private set; } = null!;
 
+    // Starts a local Appium server before any test in the fixture runs; skipped when running on BrowserStack.
     [OneTimeSetUp]
     public void StartAppiumServer()
     {
@@ -37,12 +40,14 @@ public abstract class BaseTest
         _appiumService.Start();
     }
 
+    // Disposes the local Appium server after all tests in the fixture have finished.
     [OneTimeTearDown]
     public void StopAppiumServer()
     {
         _appiumService?.Dispose();
     }
 
+    // Clears the action log and creates a fresh driver before each test.
     [SetUp]
     public void SetUp()
     {
@@ -52,6 +57,7 @@ public abstract class BaseTest
             : CreateLocalDriver();
     }
 
+    // On failure: dumps the action log and captures a screenshot as an Allure attachment. Always quits the driver.
     [TearDown]
     public void TearDown()
     {
@@ -61,12 +67,21 @@ public abstract class BaseTest
             foreach (var entry in TestLogger.GetLogs())
                 TestContext.Out.WriteLine(entry);
             TestContext.Out.WriteLine("--- End of Log ---");
+
+            // Screenshot → Allure attachment
+            var screenshotPath = Path.Combine(
+                "failures",
+                $"{TestContext.CurrentContext.Test.Name}.png");
+            Directory.CreateDirectory("failures");
+            ((ITakesScreenshot)Driver).GetScreenshot().SaveAsFile(screenshotPath);
+            AllureApi.AddAttachment("Screenshot", "image/png", screenshotPath);
         }
 
         Driver?.Quit();
         Driver?.Dispose();
     }
 
+    // Builds a local AppiumDriver for the target platform and test type using the running Appium service.
     private AppiumDriver CreateLocalDriver()
     {
         var serverUrl = _appiumService!.ServiceUrl.ToString();
@@ -83,6 +98,7 @@ public abstract class BaseTest
             : AppiumDriverFactory.CreateAndroidBrowserDriver(serverUrl: serverUrl);
     }
 
+    // Builds an AppiumDriver connected to BrowserStack using credentials from config.
     private static AppiumDriver CreateBrowserStackDriver()
     {
         var bs = ConfigurationLoader.GetBrowserStackOptions();
