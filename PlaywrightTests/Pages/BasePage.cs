@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Playwright;
 using PlaywrightTests.Logging;
 
@@ -73,5 +74,72 @@ public abstract class BasePage
     {
         TestLogger.Log($"FindByAltText: altText={altText}");
         return new SyncLocator(Page.GetByAltText(altText, options));
+    }
+
+    // Returns a SyncFrameLocator for the iframe matching the given selector.
+    protected SyncFrameLocator GetFrame(string selector)
+    {
+        TestLogger.Log($"GetFrame: selector={selector}");
+        return new SyncFrameLocator(Page.FrameLocator(selector));
+    }
+
+    // Returns all cookies visible to the current page.
+    protected IReadOnlyList<BrowserContextCookiesResult> GetCookies()
+    {
+        TestLogger.Log("GetCookies");
+        return Page.Context.CookiesAsync().GetAwaiter().GetResult();
+    }
+
+    // Returns the value of the cookie with the given name, or null if absent.
+    protected string? GetCookie(string name)
+    {
+        TestLogger.Log($"GetCookie: name={name}");
+        return Page.Context.CookiesAsync().GetAwaiter().GetResult()
+                   .FirstOrDefault(c => c.Name == name)?.Value;
+    }
+
+    // Adds a cookie to the current browser context.
+    protected void AddCookie(Cookie cookie)
+    {
+        TestLogger.Log($"AddCookie: name={cookie.Name}");
+        Page.Context.AddCookiesAsync([cookie]).GetAwaiter().GetResult();
+    }
+
+    // Clears all cookies from the current browser context.
+    protected void ClearCookies()
+    {
+        TestLogger.Log("ClearCookies");
+        Page.Context.ClearCookiesAsync().GetAwaiter().GetResult();
+    }
+
+    // Returns the value of a localStorage item by key, or null if absent.
+    protected string? GetLocalStorage(string key)
+    {
+        TestLogger.Log($"GetLocalStorage: key={key}");
+        return Page.EvaluateAsync<string?>($"localStorage.getItem({System.Text.Json.JsonSerializer.Serialize(key)})")
+                   .GetAwaiter().GetResult();
+    }
+
+    // Sets a localStorage item.
+    protected void SetLocalStorage(string key, string value)
+    {
+        TestLogger.Log($"SetLocalStorage: key={key}");
+        Page.EvaluateAsync($"localStorage.setItem({System.Text.Json.JsonSerializer.Serialize(key)}, {System.Text.Json.JsonSerializer.Serialize(value)})")
+            .GetAwaiter().GetResult();
+    }
+
+    // Removes a localStorage item by key.
+    protected void RemoveLocalStorage(string key)
+    {
+        TestLogger.Log($"RemoveLocalStorage: key={key}");
+        Page.EvaluateAsync($"localStorage.removeItem({System.Text.Json.JsonSerializer.Serialize(key)})")
+            .GetAwaiter().GetResult();
+    }
+
+    // Clears all localStorage items.
+    protected void ClearLocalStorage()
+    {
+        TestLogger.Log("ClearLocalStorage");
+        Page.EvaluateAsync("localStorage.clear()").GetAwaiter().GetResult();
     }
 }

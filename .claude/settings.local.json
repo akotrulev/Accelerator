@@ -6,7 +6,8 @@
       "WebSearch",
       "Bash(dotnet build:*)",
       "Bash(dotnet:*)",
-      "WebFetch(domain:playwright.dev)"
+      "WebFetch(domain:playwright.dev)",
+      "Bash(~/.dotnet/dotnet build:*)"
     ]
   }
 }

@@ -13,21 +13,21 @@ public abstract class BaseAppiumPage
         Driver = driver;
     }
 
-    protected IWebElement FindByAccessibilityId(string id)
+    protected AppiumElement FindByAccessibilityId(string id)
     {
         TestLogger.Log($"FindByAccessibilityId: id={id}");
-        return Driver.FindElement(MobileBy.AccessibilityId(id));
+        return new AppiumElement(Driver.FindElement(MobileBy.AccessibilityId(id)));
     }
 
-    protected IWebElement FindById(string id)
+    protected AppiumElement FindById(string id)
     {
         TestLogger.Log($"FindById: id={id}");
-        return Driver.FindElement(MobileBy.Id(id));
+        return new AppiumElement(Driver.FindElement(MobileBy.Id(id)));
     }
 
-    protected IWebElement FindByXPath(string xpath)
+    protected AppiumElement FindByXPath(string xpath)
     {
         TestLogger.Log($"FindByXPath: xpath={xpath}");
-        return Driver.FindElement(MobileBy.XPath(xpath));
+        return new AppiumElement(Driver.FindElement(MobileBy.XPath(xpath)));
     }
 }
