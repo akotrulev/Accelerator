@@ -1,4 +1,4 @@
-namespace AppiumTests.Appium.Config;
+namespace AppiumTests.Driver;
 
 public static class AppiumSettings
 {

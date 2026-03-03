@@ -1,8 +1,8 @@
 using System.Linq;
-using AppiumTests.Logging;
+using TestCore.Logging;
 using OpenQA.Selenium;
 
-namespace AppiumTests.Appium.Pages;
+namespace AppiumTests.Pages;
 
 public class AppiumElement
 {

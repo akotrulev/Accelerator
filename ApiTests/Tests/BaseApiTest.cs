@@ -1,9 +1,9 @@
-using ApiTests.Logging;
+using TestCore.Logging;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using RestSharp;
 
-namespace ApiTests;
+namespace ApiTests.Tests;
 
 [TestFixture]
 public abstract class BaseApiTest

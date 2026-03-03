@@ -1,4 +1,4 @@
-namespace ApiTests.Config;
+namespace TestCore.Config;
 
 public class TestEnvironmentOptions
 {

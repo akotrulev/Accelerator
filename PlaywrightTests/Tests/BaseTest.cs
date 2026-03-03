@@ -2,9 +2,9 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using PlaywrightTests.Config;
-using PlaywrightTests.Logging;
+using TestCore.Logging;
 
-namespace PlaywrightTests;
+namespace PlaywrightTests.Tests;
 
 [TestFixture]
 public abstract class BaseTest

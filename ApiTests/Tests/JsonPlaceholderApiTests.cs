@@ -1,7 +1,7 @@
 using ApiTests.Clients;
 using NUnit.Framework;
 
-namespace ApiTests;
+namespace ApiTests.Tests;
 
 [TestFixture]
 public class JsonPlaceholderApiTests : BaseApiTest
@@ -9,8 +9,8 @@ public class JsonPlaceholderApiTests : BaseApiTest
     [Test]
     public void GetPosts_ReturnsOk()
     {
-        var client = new JsonPlaceholderClient();
-        var response = client.GetPosts();
+        var client = new ExampleResource();
+        var response = client.GetAll();
 
         Assert.That(response.IsSuccessful, Is.True);
         Assert.That(response.Content, Is.Not.Null);
@@ -19,8 +19,8 @@ public class JsonPlaceholderApiTests : BaseApiTest
     [Test]
     public void GetPost_ById_ReturnsOk()
     {
-        var client = new JsonPlaceholderClient();
-        var response = client.GetPost(1);
+        var client = new ExampleResource();
+        var response = client.GetById(1);
 
         Assert.That(response.IsSuccessful, Is.True);
         Assert.That(response.Content, Is.Not.Null);

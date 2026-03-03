@@ -1,6 +1,7 @@
 using System.Linq;
 using Microsoft.Playwright;
-using PlaywrightTests.Logging;
+using PlaywrightTests.Locators;
+using TestCore.Logging;
 
 namespace PlaywrightTests.Pages;
 

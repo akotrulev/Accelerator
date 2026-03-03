@@ -1,6 +1,6 @@
 using OpenQA.Selenium.Appium;
 
-namespace AppiumTests.Appium.Config;
+namespace AppiumTests.Driver;
 
 public class IosSimulatorConfig
 {

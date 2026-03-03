@@ -85,3 +85,8 @@ publish/
 *.tmp
 *.temp
 *.swp
+
+############################
+# Claude Code
+############################
+.claude/settings.local.json

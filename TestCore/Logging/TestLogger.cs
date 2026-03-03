@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace PlaywrightTests.Logging;
+namespace TestCore.Logging;
 
 public static class TestLogger
 {

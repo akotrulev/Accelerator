@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using TestCore.Config;
 
 namespace PlaywrightTests.Config;
 

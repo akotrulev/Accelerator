@@ -1,8 +1,8 @@
-using AppiumTests.Logging;
+using TestCore.Logging;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 
-namespace AppiumTests.Appium.Pages;
+namespace AppiumTests.Pages;
 
 public abstract class BaseAppiumPage
 {

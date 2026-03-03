@@ -1,7 +1,7 @@
 using OpenQA.Selenium.Appium;
 using AppiumTests.Config;
 
-namespace AppiumTests.Appium.Config;
+namespace AppiumTests.Driver;
 
 public static class BrowserStackConfig
 {

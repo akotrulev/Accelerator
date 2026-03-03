@@ -1,7 +1,7 @@
 using Microsoft.Playwright;
-using PlaywrightTests.Logging;
+using TestCore.Logging;
 
-namespace PlaywrightTests.Pages;
+namespace PlaywrightTests.Locators;
 
 public class SyncFrameLocator
 {

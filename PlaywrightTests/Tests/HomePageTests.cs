@@ -2,7 +2,7 @@ using PlaywrightTests.Config;
 using PlaywrightTests.Pages;
 using NUnit.Framework;
 
-namespace PlaywrightTests;
+namespace PlaywrightTests.Tests;
 
 [TestFixture]
 public class HomePageTests : BaseTest

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using TestCore.Config;
 
 namespace AppiumTests.Config;
 
@@ -8,7 +9,7 @@ public static class ConfigurationLoader
 
     private static IConfiguration BuildConfiguration()
     {
-        var env = Environment.GetEnvironmentVariable("TEST_ENV") ?? "Test";
+        var env = Environment.GetEnvironmentVariable(EnvVars.TestEnv) ?? "Test";
         return new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
