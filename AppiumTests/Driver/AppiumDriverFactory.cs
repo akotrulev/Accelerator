@@ -8,16 +8,13 @@ namespace AppiumTests.Driver;
 
 public static class AppiumDriverFactory
 {
-    private static readonly string ExecutionMode =
-        Environment.GetEnvironmentVariable(EnvVars.ExecutionMode) ?? "Local";
-
     /// <summary>
     /// Creates a browser driver for the given platform.
-    /// Whether to connect locally or via BrowserStack is determined by the EXECUTION_MODE config value.
+    /// Whether to connect locally or via BrowserStack is determined by AppiumRunSettings.ExecutionMode.
     /// </summary>
     public static AppiumDriver CreateBrowserDriver(MobilePlatform platform, Browser browser, string? serverUrl = null)
     {
-        if (ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
+        if (AppiumRunSettings.ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
         {
             var bs = ConfigurationLoader.GetBrowserStackOptions();
             var hubUri = new Uri(bs.HubUrl);
@@ -34,14 +31,14 @@ public static class AppiumDriverFactory
 
     /// <summary>
     /// Creates a native app driver for the given platform.
-    /// Whether to connect locally or via BrowserStack is determined by the EXECUTION_MODE config value.
+    /// Whether to connect locally or via BrowserStack is determined by AppiumRunSettings.ExecutionMode.
     /// App path for local runs is read from the APP_PATH environment variable.
     /// </summary>
     public static AppiumDriver CreateNativeAppDriver(MobilePlatform platform, string? serverUrl = null)
     {
         var isIos = platform == MobilePlatform.iOS;
 
-        if (ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
+        if (AppiumRunSettings.ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
         {
             var bs = ConfigurationLoader.GetBrowserStackOptions();
             var hubUri = new Uri(bs.HubUrl);

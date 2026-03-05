@@ -75,6 +75,17 @@ coverage/
 *.trx
 
 ############################
+# Test artifact output dirs
+############################
+failures/
+videos/
+playwright-traces/
+allure-results/
+allure-report/
+**/appsettings.Test.json
+**/appsettings.Staging.json
+
+############################
 # Publish output
 ############################
 publish/

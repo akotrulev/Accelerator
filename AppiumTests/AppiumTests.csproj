@@ -32,10 +32,7 @@
       <PackageReference Include="FluentAssertions" />
       <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" />
-      <PackageReference Include="Microsoft.Playwright" />
-      <PackageReference Include="RestSharp" />
       <PackageReference Include="Selenium.WebDriver" />
-      <PackageReference Include="WebDriverManager" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     </ItemGroup>

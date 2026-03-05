@@ -35,7 +35,14 @@ jobs:
           dotnet-version: '8.0'
       - run: dotnet restore ApiTests/ApiTests.csproj
       - run: dotnet build ApiTests/ApiTests.csproj -c Release --no-restore
-      - run: dotnet test ApiTests/ApiTests.csproj -c Release --no-build
+      - run: dotnet test ApiTests/ApiTests.csproj -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+      - name: Publish test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: API Test Results
+          path: '**/TestResults/test-results.trx'
+          reporter: dotnet-trx
       - uses: actions/upload-artifact@v4
         if: always()
         with:

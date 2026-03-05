@@ -5,7 +5,7 @@ namespace AppiumTests.Driver;
 public class IosSimulatorConfig
 {
     public const string DeviceName = "iPhone 16e";
-    public const string PlatformVersion = "26.2";
+    public const string PlatformVersion = "18.0";
     public const string Udid = ""; // Leave empty for default simulator
 
     public static AppiumOptions CreateOptions(string? appPath = null)

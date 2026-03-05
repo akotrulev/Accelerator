@@ -13,17 +13,9 @@ using OpenQA.Selenium.Appium.Service;
 namespace AppiumTests.Tests;
 
 [TestFixture]
+
 public abstract class BaseTest
 {
-    private static readonly string ExecutionMode =
-        Environment.GetEnvironmentVariable(EnvVars.ExecutionMode) ?? "Local";
-
-    private static readonly MobilePlatform TargetMobilePlatform =
-        Enum.TryParse<MobilePlatform>(Environment.GetEnvironmentVariable(EnvVars.TargetPlatform), out var p) ? p : MobilePlatform.Android;
-
-    private static readonly string TestType =
-        Environment.GetEnvironmentVariable(EnvVars.TestType) ?? "Browser";
-
     private AppiumLocalService? _appiumService;
     protected AppiumDriver Driver { get; private set; } = null!;
 
@@ -31,7 +23,7 @@ public abstract class BaseTest
     [OneTimeSetUp]
     public void StartAppiumServer()
     {
-        if (ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
+        if (AppiumRunSettings.ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
             return;
 
         _appiumService = new AppiumServiceBuilder()
@@ -55,11 +47,11 @@ public abstract class BaseTest
         TestLogger.Clear();
 
         var serverUrl = _appiumService?.ServiceUrl?.ToString();
-        var browser = TargetMobilePlatform == MobilePlatform.iOS ? Browser.Safari : Browser.Chrome;
+        var browser   = AppiumRunSettings.TargetPlatform == MobilePlatform.iOS ? Browser.Safari : Browser.Chrome;
 
-        Driver = TestType.Equals("NativeApp", StringComparison.OrdinalIgnoreCase)
-            ? AppiumDriverFactory.CreateNativeAppDriver(TargetMobilePlatform, serverUrl)
-            : AppiumDriverFactory.CreateBrowserDriver(TargetMobilePlatform, browser, serverUrl);
+        Driver = AppiumRunSettings.TestType.Equals("NativeApp", StringComparison.OrdinalIgnoreCase)
+            ? AppiumDriverFactory.CreateNativeAppDriver(AppiumRunSettings.TargetPlatform, serverUrl)
+            : AppiumDriverFactory.CreateBrowserDriver(AppiumRunSettings.TargetPlatform, browser, serverUrl);
     }
 
     // On failure: dumps the action log and captures a screenshot as an Allure attachment. Always quits the driver.

@@ -45,8 +45,15 @@ jobs:
       - run: dotnet restore PlaywrightTests/PlaywrightTests.csproj
       - run: dotnet build PlaywrightTests/PlaywrightTests.csproj -c Release --no-restore
       - name: Install Playwright browsers
-        run: pwsh PlaywrightTests/bin/Release/net8.0/playwright.ps1 install --with-deps chromium
-      - run: dotnet test PlaywrightTests/PlaywrightTests.csproj -c Release --no-build
+        run: pwsh PlaywrightTests/bin/Release/net8.0/playwright.ps1 install --with-deps ${{ inputs.browser || 'chromium' }}
+      - run: dotnet test PlaywrightTests/PlaywrightTests.csproj -c Release --no-build --logger "trx;LogFileName=test-results.trx"
+      - name: Publish test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Playwright Test Results
+          path: '**/TestResults/test-results.trx'
+          reporter: dotnet-trx
       - name: Upload failure artifacts
         uses: actions/upload-artifact@v4
         if: always()
@@ -56,4 +63,23 @@ jobs:
             failures/
             videos/
             playwright-traces/
+          if-no-files-found: ignore
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results-playwright
+          path: allure-results/
+          if-no-files-found: ignore
+      - name: Generate Allure report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+      - name: Upload Allure HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report-playwright
+          path: allure-report/
           if-no-files-found: ignore

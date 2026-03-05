@@ -5,19 +5,7 @@ namespace ApiTests.Config;
 
 public static class ConfigurationLoader
 {
-    public static IConfiguration Root { get; } = BuildConfiguration();
-
-    // Loads appsettings.json, an environment-specific overlay, and environment variables into a single IConfiguration root.
-    private static IConfiguration BuildConfiguration()
-    {
-        var env = Environment.GetEnvironmentVariable("TEST_ENV") ?? "Test";
-        return new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-            .AddJsonFile($"appsettings.{env}.json", optional: true, reloadOnChange: false)
-            .AddEnvironmentVariables()
-            .Build();
-    }
+    public static IConfiguration Root { get; } = BaseConfigurationLoader.BuildConfiguration();
 
     // Reads the TestEnvironment config section and returns it as a strongly-typed options object.
     public static TestEnvironmentOptions GetTestEnvironment() =>
