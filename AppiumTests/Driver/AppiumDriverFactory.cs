@@ -14,7 +14,7 @@ public static class AppiumDriverFactory
     /// </summary>
     public static AppiumDriver CreateBrowserDriver(MobilePlatform platform, Browser browser, string? serverUrl = null)
     {
-        if (AppiumRunSettings.ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
+        if (AppiumRunSettings.ExecutionMode == ExecutionMode.BrowserStack)
         {
             var bs = ConfigurationLoader.GetBrowserStackOptions();
             var hubUri = new Uri(bs.HubUrl);
@@ -38,7 +38,7 @@ public static class AppiumDriverFactory
     {
         var isIos = platform == MobilePlatform.iOS;
 
-        if (AppiumRunSettings.ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
+        if (AppiumRunSettings.ExecutionMode == ExecutionMode.BrowserStack)
         {
             var bs = ConfigurationLoader.GetBrowserStackOptions();
             var hubUri = new Uri(bs.HubUrl);
@@ -52,5 +52,30 @@ public static class AppiumDriverFactory
         return isIos
             ? new IOSDriver(uri, IosSimulatorConfig.CreateOptions(appPath))
             : new AndroidDriver(uri, AndroidEmulatorConfig.CreateOptions(appPath));
+    }
+
+    /// <summary>
+    /// Creates a driver for a real physical device connected via USB.
+    /// The device is identified by DEVICE_UDID; the pre-installed app is activated via
+    /// BUNDLE_ID (iOS) or APP_PACKAGE + APP_ACTIVITY (Android). No app install is performed.
+    /// </summary>
+    public static AppiumDriver CreateUsbDeviceDriver(MobilePlatform platform, string? serverUrl = null)
+    {
+        var udid = Environment.GetEnvironmentVariable(EnvVars.DeviceUdid)
+            ?? throw new InvalidOperationException($"Environment variable '{EnvVars.DeviceUdid}' is required for UsbDevice mode.");
+
+        var uri = new Uri(serverUrl ?? AppiumSettings.ServerHost);
+
+        if (platform == MobilePlatform.iOS)
+        {
+            var bundleId = Environment.GetEnvironmentVariable(EnvVars.BundleId);
+            return new IOSDriver(uri, IosRealDeviceConfig.CreateOptions(udid, bundleId));
+        }
+        else
+        {
+            var appPackage  = Environment.GetEnvironmentVariable(EnvVars.AppPackage);
+            var appActivity = Environment.GetEnvironmentVariable(EnvVars.AppActivity);
+            return new AndroidDriver(uri, AndroidRealDeviceConfig.CreateOptions(udid, appPackage, appActivity));
+        }
     }
 }

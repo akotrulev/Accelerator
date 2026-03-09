@@ -23,7 +23,7 @@ public abstract class BaseTest
     [OneTimeSetUp]
     public void StartAppiumServer()
     {
-        if (AppiumRunSettings.ExecutionMode.Equals("BrowserStack", StringComparison.OrdinalIgnoreCase))
+        if (AppiumRunSettings.ExecutionMode == ExecutionMode.BrowserStack)
             return;
 
         _appiumService = new AppiumServiceBuilder()
@@ -49,9 +49,11 @@ public abstract class BaseTest
         var serverUrl = _appiumService?.ServiceUrl?.ToString();
         var browser   = AppiumRunSettings.TargetPlatform == MobilePlatform.iOS ? Browser.Safari : Browser.Chrome;
 
-        Driver = AppiumRunSettings.TestType.Equals("NativeApp", StringComparison.OrdinalIgnoreCase)
-            ? AppiumDriverFactory.CreateNativeAppDriver(AppiumRunSettings.TargetPlatform, serverUrl)
-            : AppiumDriverFactory.CreateBrowserDriver(AppiumRunSettings.TargetPlatform, browser, serverUrl);
+        Driver = AppiumRunSettings.ExecutionMode == ExecutionMode.UsbDevice
+            ? AppiumDriverFactory.CreateUsbDeviceDriver(AppiumRunSettings.TargetPlatform, serverUrl)
+            : AppiumRunSettings.TestType == TestType.NativeApp
+                ? AppiumDriverFactory.CreateNativeAppDriver(AppiumRunSettings.TargetPlatform, serverUrl)
+                : AppiumDriverFactory.CreateBrowserDriver(AppiumRunSettings.TargetPlatform, browser, serverUrl);
     }
 
     // On failure: dumps the action log and captures a screenshot as an Allure attachment. Always quits the driver.

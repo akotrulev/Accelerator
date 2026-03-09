@@ -2,147 +2,339 @@
 
 NUnit test project for mobile UI testing using [Appium](https://appium.io/). Includes an Appium driver factory, iOS/Android configuration helpers, and a base page object.
 
-## Environment Setup
+## macOS Setup
 
-### 1. JDK 21
+1. **Install Homebrew** (if not installed):
 
-**macOS:**
-```bash
-brew install openjdk@21
-sudo ln -sfn $(brew --prefix openjdk@21)/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk
-```
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
 
-Add to `~/.zshrc` (or `~/.bash_profile`):
-```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 21)
-export PATH=$JAVA_HOME/bin:$PATH
-```
+2. **Install .NET 8 SDK:**
 
-Reload and verify:
-```bash
-source ~/.zshrc
-java -version   # must show openjdk 21
-```
+   ```bash
+   brew install --cask dotnet-sdk
+   dotnet --version   # should show 8.x.x
+   ```
 
----
+3. **Install JDK 21:**
 
-### 2. Android SDK (without Android Studio)
+   ```bash
+   brew install openjdk@21
+   sudo ln -sfn $(brew --prefix openjdk@21)/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+   ```
 
-Download command-line tools only from https://developer.android.com/studio#command-tools.
+   Add to `~/.zshrc`:
 
-**macOS:**
-```bash
-mkdir -p ~/android-sdk/cmdline-tools
-unzip commandlinetools-mac-*.zip -d ~/android-sdk/cmdline-tools
-mv ~/android-sdk/cmdline-tools/cmdline-tools ~/android-sdk/cmdline-tools/latest
-```
+   ```bash
+   export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+   export PATH=$JAVA_HOME/bin:$PATH
+   ```
 
-Add to `~/.zshrc` (or `~/.bash_profile`):
-```bash
-export ANDROID_HOME=~/android-sdk
-export ANDROID_SDK_ROOT=$ANDROID_HOME
-export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
-```
+   Reload and verify:
 
-Reload: `source ~/.zshrc`
+   ```bash
+   source ~/.zshrc
+   java -version   # must show openjdk 21
+   ```
 
-**Windows:**
-- Create SDK root: `mkdir %USERPROFILE%\android-sdk\cmdline-tools`
-- Extract the downloaded zip so the inner `cmdline-tools` folder ends up at:
-  `%USERPROFILE%\android-sdk\cmdline-tools\latest`
-- Add to System Environment Variables (System Properties → Environment Variables):
-  - `ANDROID_HOME` = `%USERPROFILE%\android-sdk`
-  - `ANDROID_SDK_ROOT` = `%USERPROFILE%\android-sdk`
-  - Append to `Path`:
-    - `%ANDROID_HOME%\cmdline-tools\latest\bin`
-    - `%ANDROID_HOME%\platform-tools`
-    - `%ANDROID_HOME%\emulator`
-- Open a new Command Prompt or PowerShell for the variables to take effect.
+4. **Install Android SDK command-line tools:**
 
-**Both platforms — install SDK components and create AVD:**
-```bash
-yes | sdkmanager --licenses
-sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" \
-           "system-images;android-34;google_apis;x86_64" "emulator"
-```
-On Windows, replace `yes |` with answering `y` to each prompt (or pipe with `echo y |` in CMD).
+   Download from https://developer.android.com/studio#command-tools, then:
 
-Create AVD matching the project config (`Avd = "Pixel_6_API_34"`):
-```bash
-avdmanager create avd \
-  -n Pixel_6_API_34 \
-  -k "system-images;android-34;google_apis;x86_64" \
-  -d "pixel_6"
-```
+   ```bash
+   mkdir -p ~/android-sdk/cmdline-tools
+   unzip commandlinetools-mac-*.zip -d ~/android-sdk/cmdline-tools
+   mv ~/android-sdk/cmdline-tools/cmdline-tools ~/android-sdk/cmdline-tools/latest
+   ```
 
-Start the emulator:
+   Add to `~/.zshrc`:
 
-**macOS / Linux:**
-```bash
-emulator -avd Pixel_6_API_34 -no-snapshot &
-adb wait-for-device
-adb devices   # should list the emulator
-```
+   ```bash
+   export ANDROID_HOME=~/android-sdk
+   export ANDROID_SDK_ROOT=$ANDROID_HOME
+   export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
+   ```
 
-**Windows (Command Prompt):**
-```cmd
-start emulator -avd Pixel_6_API_34 -no-snapshot
-adb wait-for-device
-adb devices
-```
+   Reload: `source ~/.zshrc`
 
-**Windows (PowerShell):**
-```powershell
-Start-Process emulator -ArgumentList "-avd Pixel_6_API_34 -no-snapshot"
-adb wait-for-device
-adb devices
-```
+5. **Accept licenses and install SDK components:**
 
----
+   ```bash
+   yes | sdkmanager --licenses
+   sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" \
+              "system-images;android-34;google_apis;x86_64" "emulator"
+   ```
 
-### 3. Node.js and npm
+6. **Create the AVD:**
 
-```bash
-brew install node
-```
+   ```bash
+   avdmanager create avd \
+     -n Pixel_6_API_34 \
+     -k "system-images;android-34;google_apis;x86_64" \
+     -d "pixel_6"
+   avdmanager list avd   # verify it appears
+   ```
 
-Verify:
-```bash
-node -v   # e.g. v20.x.x
-npm -v    # e.g. 10.x.x
-```
+7. **Start the Android emulator:**
 
----
+   ```bash
+   emulator -avd Pixel_6_API_34 -no-snapshot &
+   adb wait-for-device
+   adb devices   # should list the emulator
+   ```
 
-### 4. Appium
+8. **Install Xcode (iOS only):**
 
-```bash
-npm install -g appium
-appium driver install uiautomator2   # Android
-appium driver install xcuitest       # iOS (macOS only)
-```
+   Install Xcode from the Mac App Store, then:
 
-Verify full setup:
-```bash
-appium driver list --installed
-appium-doctor --android   # requires: npm install -g appium-doctor
-```
+   ```bash
+   sudo xcodebuild -license accept
+   ```
 
-Start the server (only needed if not using `AppiumLocalService` — BaseTest auto-starts it):
-```bash
-appium --address 127.0.0.1 --port 4723
-```
+   Boot the iOS simulator and verify:
 
----
+   ```bash
+   xcrun simctl boot "iPhone 16e"
+   xcrun simctl list devices | grep "iPhone 16e"
+   ```
 
-### 5. .NET project
+9. **Install Node.js 20:**
 
-```bash
-dotnet restore AppiumTests/AppiumTests.csproj
-dotnet build AppiumTests/AppiumTests.csproj
-```
+   ```bash
+   brew install node@20
+   node -v   # should show v20.x.x
+   npm -v
+   ```
 
-Configure the target device in `appsettings.json` or via environment variables.
+10. **Install Appium and drivers:**
+
+    ```bash
+    npm install -g appium
+    appium driver install uiautomator2   # Android
+    appium driver install xcuitest       # iOS only
+    appium driver list --installed
+    ```
+
+    Run the doctor to verify your environment:
+
+    ```bash
+    npm install -g appium-doctor
+    appium-doctor --android
+    appium-doctor --ios   # iOS only
+    ```
+
+11. **Clone and build the project:**
+
+    ```bash
+    git clone <repo-url> && cd Accelerator
+    dotnet restore AppiumTests/AppiumTests.csproj
+    dotnet build AppiumTests/AppiumTests.csproj
+    ```
+
+12. **Set environment variables** — add to `~/.zshrc`:
+
+    ```bash
+    export EXECUTION_MODE=Local
+    export TARGET_PLATFORM=Android
+    export TEST_TYPE=Browser
+    ```
+
+    For BrowserStack (optional):
+
+    ```bash
+    export BrowserStack__UserName=<your-username>
+    export BrowserStack__AccessKey=<your-access-key>
+    ```
+
+    Reload: `source ~/.zshrc`
+
+13. **(Optional) Install Allure CLI:**
+
+    ```bash
+    brew install allure
+    ```
+
+14. **Start the Appium server** in a separate terminal:
+
+    ```bash
+    appium --address 127.0.0.1 --port 4723
+    ```
+
+15. **Run tests:**
+
+    ```bash
+    # Android browser (default)
+    dotnet test AppiumTests/AppiumTests.csproj
+
+    # iOS browser (requires Xcode)
+    TARGET_PLATFORM=iOS dotnet test AppiumTests/AppiumTests.csproj
+
+    # Android native app
+    APP_PATH=/path/to/app.apk TEST_TYPE=NativeApp dotnet test AppiumTests/AppiumTests.csproj
+    ```
+
+## Windows 11 Setup
+
+> **Note:** iOS simulator testing is macOS-only. Windows supports Android emulator and BrowserStack testing.
+
+1. **Verify winget** is available (comes with App Installer from the Microsoft Store):
+
+   ```powershell
+   winget --version
+   ```
+
+2. **Install .NET 8 SDK:**
+
+   ```powershell
+   winget install Microsoft.DotNet.SDK.8
+   ```
+
+3. **Install JDK 21:**
+
+   ```powershell
+   winget install EclipseAdoptium.Temurin.21.JDK
+   ```
+
+   Set `JAVA_HOME` and update `PATH`:
+
+   ```powershell
+   $javaHome = "C:\Program Files\Eclipse Adoptium\jdk-21*"
+   [System.Environment]::SetEnvironmentVariable("JAVA_HOME", (Resolve-Path $javaHome).Path, "User")
+   $path = [System.Environment]::GetEnvironmentVariable("PATH", "User")
+   [System.Environment]::SetEnvironmentVariable("PATH", "$path;$env:JAVA_HOME\bin", "User")
+   ```
+
+   Restart the terminal, then verify:
+
+   ```powershell
+   java -version   # must show openjdk 21
+   ```
+
+4. **Install Android SDK command-line tools:**
+
+   Download from https://developer.android.com/studio#command-tools, then in PowerShell:
+
+   ```powershell
+   New-Item -ItemType Directory -Path "$env:USERPROFILE\android-sdk\cmdline-tools" -Force
+   Expand-Archive commandlinetools-win-*.zip -DestinationPath "$env:USERPROFILE\android-sdk\cmdline-tools"
+   Rename-Item "$env:USERPROFILE\android-sdk\cmdline-tools\cmdline-tools" "latest"
+   ```
+
+   Set environment variables:
+
+   ```powershell
+   [System.Environment]::SetEnvironmentVariable("ANDROID_HOME", "$env:USERPROFILE\android-sdk", "User")
+   [System.Environment]::SetEnvironmentVariable("ANDROID_SDK_ROOT", "$env:USERPROFILE\android-sdk", "User")
+   $path = [System.Environment]::GetEnvironmentVariable("PATH", "User")
+   [System.Environment]::SetEnvironmentVariable("PATH",
+     "$path;$env:USERPROFILE\android-sdk\cmdline-tools\latest\bin;$env:USERPROFILE\android-sdk\platform-tools;$env:USERPROFILE\android-sdk\emulator",
+     "User")
+   ```
+
+   Restart the terminal for variables to take effect.
+
+5. **Accept licenses and install SDK components:**
+
+   ```powershell
+   # Answer 'y' to each license prompt
+   sdkmanager --licenses
+   sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" `
+              "system-images;android-34;google_apis;x86_64" "emulator"
+   ```
+
+6. **Create the AVD:**
+
+   ```powershell
+   avdmanager create avd `
+     -n Pixel_6_API_34 `
+     -k "system-images;android-34;google_apis;x86_64" `
+     -d "pixel_6"
+   avdmanager list avd   # verify it appears
+   ```
+
+   > **Note:** For hardware acceleration, ensure Hyper-V is enabled (`optionalfeatures.exe` → Hyper-V).
+
+7. **Start the Android emulator:**
+
+   ```powershell
+   Start-Process emulator -ArgumentList "-avd Pixel_6_API_34 -no-snapshot"
+   adb wait-for-device
+   adb devices   # should list the emulator
+   ```
+
+8. **Install Node.js 20:**
+
+   ```powershell
+   winget install OpenJS.NodeJS.LTS
+   node -v   # should show v20.x.x
+   ```
+
+   Restart the terminal for `node`/`npm` to be on the path.
+
+9. **Install Appium and UIAutomator2 driver:**
+
+   ```powershell
+   npm install -g appium
+   appium driver install uiautomator2
+   appium driver list --installed
+   ```
+
+   Verify your environment:
+
+   ```powershell
+   npm install -g appium-doctor
+   appium-doctor --android
+   ```
+
+10. **Clone and build the project:**
+
+    ```powershell
+    git clone <repo-url> && cd Accelerator
+    dotnet restore AppiumTests/AppiumTests.csproj
+    dotnet build AppiumTests/AppiumTests.csproj
+    ```
+
+11. **Set environment variables:**
+
+    ```powershell
+    [System.Environment]::SetEnvironmentVariable("EXECUTION_MODE", "Local", "User")
+    [System.Environment]::SetEnvironmentVariable("TARGET_PLATFORM", "Android", "User")
+    [System.Environment]::SetEnvironmentVariable("TEST_TYPE", "Browser", "User")
+    ```
+
+    For BrowserStack (optional):
+
+    ```powershell
+    [System.Environment]::SetEnvironmentVariable("BrowserStack__UserName", "<your-username>", "User")
+    [System.Environment]::SetEnvironmentVariable("BrowserStack__AccessKey", "<your-access-key>", "User")
+    ```
+
+    Restart the terminal for variables to take effect.
+
+12. **(Optional) Install Allure CLI:**
+
+    ```powershell
+    npm install -g allure-commandline
+    ```
+
+13. **Start the Appium server** in a separate terminal:
+
+    ```powershell
+    appium --address 127.0.0.1 --port 4723
+    ```
+
+14. **Run tests:**
+
+    ```powershell
+    # Android browser (default)
+    dotnet test AppiumTests/AppiumTests.csproj
+
+    # Android native app
+    $env:APP_PATH = "C:\path\to\app.apk"
+    $env:TEST_TYPE = "NativeApp"
+    dotnet test AppiumTests/AppiumTests.csproj
+    ```
 
 ## Configuration
 

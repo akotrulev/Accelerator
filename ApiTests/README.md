@@ -16,6 +16,92 @@ NUnit test project for API testing using [RestSharp](https://restsharp.dev/). In
    dotnet build ApiTests/ApiTests.csproj
    ```
 
+## macOS Setup
+
+1. **Install Homebrew** (if not installed):
+
+   ```bash
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+2. **Install .NET 8 SDK:**
+
+   ```bash
+   brew install --cask dotnet-sdk
+   dotnet --version   # should show 8.x.x
+   ```
+
+3. **Clone and build:**
+
+   ```bash
+   git clone <repo-url> && cd Accelerator
+   dotnet restore ApiTests/ApiTests.csproj
+   dotnet build ApiTests/ApiTests.csproj
+   ```
+
+4. **Set the test environment variable** — add to `~/.zshrc`:
+
+   ```bash
+   export TEST_ENV=Test
+   ```
+
+   Reload: `source ~/.zshrc`
+
+5. **(Optional) Install Allure CLI:**
+
+   ```bash
+   brew install allure
+   ```
+
+6. **Run a smoke test** (requires network access to `jsonplaceholder.typicode.com`):
+
+   ```bash
+   dotnet test ApiTests/ApiTests.csproj --logger "console;verbosity=normal"
+   ```
+
+## Windows 11 Setup
+
+1. **Verify winget** is available (comes with App Installer from the Microsoft Store). Open PowerShell and run:
+
+   ```powershell
+   winget --version
+   ```
+
+2. **Install .NET 8 SDK:**
+
+   ```powershell
+   winget install Microsoft.DotNet.SDK.8
+   ```
+
+3. **Clone and build:**
+
+   ```powershell
+   git clone <repo-url> && cd Accelerator
+   dotnet restore ApiTests/ApiTests.csproj
+   dotnet build ApiTests/ApiTests.csproj
+   ```
+
+4. **Set the test environment variable:**
+
+   ```powershell
+   [System.Environment]::SetEnvironmentVariable("TEST_ENV", "Test", "User")
+   ```
+
+   Restart the terminal for the variable to take effect.
+
+5. **(Optional) Install Allure CLI:**
+
+   ```powershell
+   winget install OpenJS.NodeJS.LTS
+   npm install -g allure-commandline
+   ```
+
+6. **Run a smoke test** (requires network access to `jsonplaceholder.typicode.com`):
+
+   ```powershell
+   dotnet test ApiTests/ApiTests.csproj --logger "console;verbosity=normal"
+   ```
+
 ## Running tests locally
 
 From the repository root:
